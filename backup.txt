@@ -1,0 +1,1718 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.6.3
+-- Dumped by pg_dump version 9.6.3
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+--
+-- Name: submissionresult; Type: TYPE; Schema: public; Owner: andres
+--
+
+CREATE TYPE submissionresult AS ENUM (
+    'accepted',
+    'wrong_answer',
+    'time_limit_exceeded',
+    'memory_limit_exceeded',
+    'runtime_error'
+);
+
+
+ALTER TYPE submissionresult OWNER TO andres;
+
+--
+-- Name: submissionstate; Type: TYPE; Schema: public; Owner: andres
+--
+
+CREATE TYPE submissionstate AS ENUM (
+    'pending',
+    'evaluated',
+    'internal_server_error',
+    'compilation_error'
+);
+
+
+ALTER TYPE submissionstate OWNER TO andres;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: alembic_version; Type: TABLE; Schema: public; Owner: andres
+--
+
+CREATE TABLE alembic_version (
+    version_num character varying(32) NOT NULL
+);
+
+
+ALTER TABLE alembic_version OWNER TO andres;
+
+--
+-- Name: assignment; Type: TABLE; Schema: public; Owner: andres
+--
+
+CREATE TABLE assignment (
+    id integer NOT NULL,
+    created timestamp without time zone,
+    updated timestamp without time zone,
+    title character varying(255) NOT NULL,
+    start_date timestamp with time zone NOT NULL,
+    due_date timestamp with time zone NOT NULL,
+    group_id integer NOT NULL,
+    problem_id integer NOT NULL
+);
+
+
+ALTER TABLE assignment OWNER TO andres;
+
+--
+-- Name: assignment_id_seq; Type: SEQUENCE; Schema: public; Owner: andres
+--
+
+CREATE SEQUENCE assignment_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE assignment_id_seq OWNER TO andres;
+
+--
+-- Name: assignment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: andres
+--
+
+ALTER SEQUENCE assignment_id_seq OWNED BY assignment.id;
+
+
+--
+-- Name: case; Type: TABLE; Schema: public; Owner: andres
+--
+
+CREATE TABLE "case" (
+    id integer NOT NULL,
+    created timestamp without time zone,
+    updated timestamp without time zone,
+    input text NOT NULL,
+    feedback text,
+    output text,
+    is_sample boolean,
+    problem_id integer NOT NULL
+);
+
+
+ALTER TABLE "case" OWNER TO andres;
+
+--
+-- Name: case_id_seq; Type: SEQUENCE; Schema: public; Owner: andres
+--
+
+CREATE SEQUENCE case_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE case_id_seq OWNER TO andres;
+
+--
+-- Name: case_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: andres
+--
+
+ALTER SEQUENCE case_id_seq OWNED BY "case".id;
+
+
+--
+-- Name: comment; Type: TABLE; Schema: public; Owner: andres
+--
+
+CREATE TABLE comment (
+    id integer NOT NULL,
+    created timestamp without time zone,
+    updated timestamp without time zone,
+    text character varying(255) NOT NULL,
+    "isVisible" boolean,
+    likes integer,
+    dislikes integer,
+    forum_id integer NOT NULL
+);
+
+
+ALTER TABLE comment OWNER TO andres;
+
+--
+-- Name: comment_id_seq; Type: SEQUENCE; Schema: public; Owner: andres
+--
+
+CREATE SEQUENCE comment_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE comment_id_seq OWNER TO andres;
+
+--
+-- Name: comment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: andres
+--
+
+ALTER SEQUENCE comment_id_seq OWNED BY comment.id;
+
+
+--
+-- Name: course; Type: TABLE; Schema: public; Owner: andres
+--
+
+CREATE TABLE course (
+    id integer NOT NULL,
+    created timestamp without time zone,
+    updated timestamp without time zone,
+    name character varying(255) NOT NULL
+);
+
+
+ALTER TABLE course OWNER TO andres;
+
+--
+-- Name: course_id_seq; Type: SEQUENCE; Schema: public; Owner: andres
+--
+
+CREATE SEQUENCE course_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE course_id_seq OWNER TO andres;
+
+--
+-- Name: course_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: andres
+--
+
+ALTER SEQUENCE course_id_seq OWNED BY course.id;
+
+
+--
+-- Name: enrollment; Type: TABLE; Schema: public; Owner: andres
+--
+
+CREATE TABLE enrollment (
+    id integer NOT NULL,
+    created timestamp without time zone,
+    updated timestamp without time zone,
+    group_id integer,
+    student_id integer
+);
+
+
+ALTER TABLE enrollment OWNER TO andres;
+
+--
+-- Name: enrollment_id_seq; Type: SEQUENCE; Schema: public; Owner: andres
+--
+
+CREATE SEQUENCE enrollment_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE enrollment_id_seq OWNER TO andres;
+
+--
+-- Name: enrollment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: andres
+--
+
+ALTER SEQUENCE enrollment_id_seq OWNED BY enrollment.id;
+
+
+--
+-- Name: forum; Type: TABLE; Schema: public; Owner: andres
+--
+
+CREATE TABLE forum (
+    id integer NOT NULL,
+    created timestamp without time zone,
+    updated timestamp without time zone,
+    name character varying(255) NOT NULL
+);
+
+
+ALTER TABLE forum OWNER TO andres;
+
+--
+-- Name: forum_id_seq; Type: SEQUENCE; Schema: public; Owner: andres
+--
+
+CREATE SEQUENCE forum_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE forum_id_seq OWNER TO andres;
+
+--
+-- Name: forum_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: andres
+--
+
+ALTER SEQUENCE forum_id_seq OWNED BY forum.id;
+
+
+--
+-- Name: group; Type: TABLE; Schema: public; Owner: andres
+--
+
+CREATE TABLE "group" (
+    id integer NOT NULL,
+    created timestamp without time zone,
+    updated timestamp without time zone,
+    course_id integer NOT NULL,
+    period character varying(255) NOT NULL,
+    professor_id integer NOT NULL
+);
+
+
+ALTER TABLE "group" OWNER TO andres;
+
+--
+-- Name: group_id_seq; Type: SEQUENCE; Schema: public; Owner: andres
+--
+
+CREATE SEQUENCE group_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE group_id_seq OWNER TO andres;
+
+--
+-- Name: group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: andres
+--
+
+ALTER SEQUENCE group_id_seq OWNED BY "group".id;
+
+
+--
+-- Name: language; Type: TABLE; Schema: public; Owner: andres
+--
+
+CREATE TABLE language (
+    id integer NOT NULL,
+    created timestamp without time zone,
+    updated timestamp without time zone,
+    name character varying(255) NOT NULL,
+    value character varying(255) NOT NULL,
+    extension character varying(255) NOT NULL
+);
+
+
+ALTER TABLE language OWNER TO andres;
+
+--
+-- Name: language_id_seq; Type: SEQUENCE; Schema: public; Owner: andres
+--
+
+CREATE SEQUENCE language_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE language_id_seq OWNER TO andres;
+
+--
+-- Name: language_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: andres
+--
+
+ALTER SEQUENCE language_id_seq OWNED BY language.id;
+
+
+--
+-- Name: problem; Type: TABLE; Schema: public; Owner: andres
+--
+
+CREATE TABLE problem (
+    created timestamp without time zone,
+    updated timestamp without time zone,
+    name character varying(255) NOT NULL,
+    difficulty integer,
+    active boolean,
+    language character varying(255) NOT NULL,
+    code text NOT NULL,
+    template text,
+    signature text,
+    description_english text NOT NULL,
+    description_spanish text,
+    time_limit integer,
+    memory_limit integer,
+    author_id integer NOT NULL,
+    id integer NOT NULL,
+    is_subproblem boolean,
+    belongs_to integer
+);
+
+
+ALTER TABLE problem OWNER TO andres;
+
+--
+-- Name: problem_id_seq; Type: SEQUENCE; Schema: public; Owner: andres
+--
+
+CREATE SEQUENCE problem_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE problem_id_seq OWNER TO andres;
+
+--
+-- Name: problem_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: andres
+--
+
+ALTER SEQUENCE problem_id_seq OWNED BY problem.id;
+
+
+--
+-- Name: problemtopic; Type: TABLE; Schema: public; Owner: andres
+--
+
+CREATE TABLE problemtopic (
+    id integer NOT NULL,
+    created timestamp without time zone,
+    updated timestamp without time zone,
+    name character varying(255),
+    problem_id integer,
+    topic_id integer
+);
+
+
+ALTER TABLE problemtopic OWNER TO andres;
+
+--
+-- Name: problemtopic_id_seq; Type: SEQUENCE; Schema: public; Owner: andres
+--
+
+CREATE SEQUENCE problemtopic_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE problemtopic_id_seq OWNER TO andres;
+
+--
+-- Name: problemtopic_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: andres
+--
+
+ALTER SEQUENCE problemtopic_id_seq OWNED BY problemtopic.id;
+
+
+--
+-- Name: relevanttopic; Type: TABLE; Schema: public; Owner: andres
+--
+
+CREATE TABLE relevanttopic (
+    id integer NOT NULL,
+    created timestamp without time zone,
+    updated timestamp without time zone,
+    name character varying(255),
+    course_id integer,
+    topic_id integer
+);
+
+
+ALTER TABLE relevanttopic OWNER TO andres;
+
+--
+-- Name: relevanttopic_id_seq; Type: SEQUENCE; Schema: public; Owner: andres
+--
+
+CREATE SEQUENCE relevanttopic_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE relevanttopic_id_seq OWNER TO andres;
+
+--
+-- Name: relevanttopic_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: andres
+--
+
+ALTER SEQUENCE relevanttopic_id_seq OWNED BY relevanttopic.id;
+
+
+--
+-- Name: statistic; Type: TABLE; Schema: public; Owner: andres
+--
+
+CREATE TABLE statistic (
+    id integer NOT NULL,
+    created timestamp without time zone,
+    updated timestamp without time zone,
+    total_submissions integer,
+    total_accepted_submissions integer,
+    problem_id integer NOT NULL
+);
+
+
+ALTER TABLE statistic OWNER TO andres;
+
+--
+-- Name: statistic_id_seq; Type: SEQUENCE; Schema: public; Owner: andres
+--
+
+CREATE SEQUENCE statistic_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE statistic_id_seq OWNER TO andres;
+
+--
+-- Name: statistic_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: andres
+--
+
+ALTER SEQUENCE statistic_id_seq OWNED BY statistic.id;
+
+
+--
+-- Name: submission; Type: TABLE; Schema: public; Owner: andres
+--
+
+CREATE TABLE submission (
+    id integer NOT NULL,
+    created timestamp without time zone,
+    updated timestamp without time zone,
+    code text NOT NULL,
+    language character varying(255) NOT NULL,
+    feedback_list json,
+    grade integer,
+    no_of_attempt integer,
+    state submissionstate,
+    result submissionresult,
+    user_id integer NOT NULL,
+    problem_id integer
+);
+
+
+ALTER TABLE submission OWNER TO andres;
+
+--
+-- Name: submission_id_seq; Type: SEQUENCE; Schema: public; Owner: andres
+--
+
+CREATE SEQUENCE submission_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE submission_id_seq OWNER TO andres;
+
+--
+-- Name: submission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: andres
+--
+
+ALTER SEQUENCE submission_id_seq OWNED BY submission.id;
+
+
+--
+-- Name: taken; Type: TABLE; Schema: public; Owner: andres
+--
+
+CREATE TABLE taken (
+    id integer NOT NULL,
+    created timestamp without time zone,
+    updated timestamp without time zone,
+    user_id integer NOT NULL,
+    problem_id integer NOT NULL,
+    team_id integer NOT NULL
+);
+
+
+ALTER TABLE taken OWNER TO andres;
+
+--
+-- Name: taken_id_seq; Type: SEQUENCE; Schema: public; Owner: andres
+--
+
+CREATE SEQUENCE taken_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE taken_id_seq OWNER TO andres;
+
+--
+-- Name: taken_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: andres
+--
+
+ALTER SEQUENCE taken_id_seq OWNED BY taken.id;
+
+
+--
+-- Name: team; Type: TABLE; Schema: public; Owner: andres
+--
+
+CREATE TABLE team (
+    id integer NOT NULL,
+    created timestamp without time zone,
+    updated timestamp without time zone,
+    name character varying(255),
+    professor_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE team OWNER TO andres;
+
+--
+-- Name: team_id_seq; Type: SEQUENCE; Schema: public; Owner: andres
+--
+
+CREATE SEQUENCE team_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE team_id_seq OWNER TO andres;
+
+--
+-- Name: team_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: andres
+--
+
+ALTER SEQUENCE team_id_seq OWNED BY team.id;
+
+
+--
+-- Name: teamenroll; Type: TABLE; Schema: public; Owner: andres
+--
+
+CREATE TABLE teamenroll (
+    id integer NOT NULL,
+    created timestamp without time zone,
+    updated timestamp without time zone,
+    team_id integer,
+    student_id integer
+);
+
+
+ALTER TABLE teamenroll OWNER TO andres;
+
+--
+-- Name: teamenroll_id_seq; Type: SEQUENCE; Schema: public; Owner: andres
+--
+
+CREATE SEQUENCE teamenroll_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE teamenroll_id_seq OWNER TO andres;
+
+--
+-- Name: teamenroll_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: andres
+--
+
+ALTER SEQUENCE teamenroll_id_seq OWNED BY teamenroll.id;
+
+
+--
+-- Name: topic; Type: TABLE; Schema: public; Owner: andres
+--
+
+CREATE TABLE topic (
+    id integer NOT NULL,
+    created timestamp without time zone,
+    updated timestamp without time zone,
+    name character varying(255) NOT NULL
+);
+
+
+ALTER TABLE topic OWNER TO andres;
+
+--
+-- Name: topic_id_seq; Type: SEQUENCE; Schema: public; Owner: andres
+--
+
+CREATE SEQUENCE topic_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE topic_id_seq OWNER TO andres;
+
+--
+-- Name: topic_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: andres
+--
+
+ALTER SEQUENCE topic_id_seq OWNED BY topic.id;
+
+
+--
+-- Name: user; Type: TABLE; Schema: public; Owner: andres
+--
+
+CREATE TABLE "user" (
+    id integer NOT NULL,
+    created timestamp without time zone,
+    updated timestamp without time zone,
+    email character varying(255) NOT NULL,
+    enrollment character varying(255) NOT NULL,
+    password_hash character varying(255),
+    active boolean,
+    first_name character varying(255),
+    last_name character varying(255),
+    role character varying(20)
+);
+
+
+ALTER TABLE "user" OWNER TO andres;
+
+--
+-- Name: user_id_seq; Type: SEQUENCE; Schema: public; Owner: andres
+--
+
+CREATE SEQUENCE user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE user_id_seq OWNER TO andres;
+
+--
+-- Name: user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: andres
+--
+
+ALTER SEQUENCE user_id_seq OWNED BY "user".id;
+
+
+--
+-- Name: assignment id; Type: DEFAULT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY assignment ALTER COLUMN id SET DEFAULT nextval('assignment_id_seq'::regclass);
+
+
+--
+-- Name: case id; Type: DEFAULT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY "case" ALTER COLUMN id SET DEFAULT nextval('case_id_seq'::regclass);
+
+
+--
+-- Name: comment id; Type: DEFAULT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY comment ALTER COLUMN id SET DEFAULT nextval('comment_id_seq'::regclass);
+
+
+--
+-- Name: course id; Type: DEFAULT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY course ALTER COLUMN id SET DEFAULT nextval('course_id_seq'::regclass);
+
+
+--
+-- Name: enrollment id; Type: DEFAULT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY enrollment ALTER COLUMN id SET DEFAULT nextval('enrollment_id_seq'::regclass);
+
+
+--
+-- Name: forum id; Type: DEFAULT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY forum ALTER COLUMN id SET DEFAULT nextval('forum_id_seq'::regclass);
+
+
+--
+-- Name: group id; Type: DEFAULT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY "group" ALTER COLUMN id SET DEFAULT nextval('group_id_seq'::regclass);
+
+
+--
+-- Name: language id; Type: DEFAULT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY language ALTER COLUMN id SET DEFAULT nextval('language_id_seq'::regclass);
+
+
+--
+-- Name: problem id; Type: DEFAULT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY problem ALTER COLUMN id SET DEFAULT nextval('problem_id_seq'::regclass);
+
+
+--
+-- Name: problemtopic id; Type: DEFAULT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY problemtopic ALTER COLUMN id SET DEFAULT nextval('problemtopic_id_seq'::regclass);
+
+
+--
+-- Name: relevanttopic id; Type: DEFAULT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY relevanttopic ALTER COLUMN id SET DEFAULT nextval('relevanttopic_id_seq'::regclass);
+
+
+--
+-- Name: statistic id; Type: DEFAULT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY statistic ALTER COLUMN id SET DEFAULT nextval('statistic_id_seq'::regclass);
+
+
+--
+-- Name: submission id; Type: DEFAULT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY submission ALTER COLUMN id SET DEFAULT nextval('submission_id_seq'::regclass);
+
+
+--
+-- Name: taken id; Type: DEFAULT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY taken ALTER COLUMN id SET DEFAULT nextval('taken_id_seq'::regclass);
+
+
+--
+-- Name: team id; Type: DEFAULT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY team ALTER COLUMN id SET DEFAULT nextval('team_id_seq'::regclass);
+
+
+--
+-- Name: teamenroll id; Type: DEFAULT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY teamenroll ALTER COLUMN id SET DEFAULT nextval('teamenroll_id_seq'::regclass);
+
+
+--
+-- Name: topic id; Type: DEFAULT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY topic ALTER COLUMN id SET DEFAULT nextval('topic_id_seq'::regclass);
+
+
+--
+-- Name: user id; Type: DEFAULT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY "user" ALTER COLUMN id SET DEFAULT nextval('user_id_seq'::regclass);
+
+
+--
+-- Data for Name: alembic_version; Type: TABLE DATA; Schema: public; Owner: andres
+--
+
+COPY alembic_version (version_num) FROM stdin;
+e5a07a42014d
+\.
+
+
+--
+-- Data for Name: assignment; Type: TABLE DATA; Schema: public; Owner: andres
+--
+
+COPY assignment (id, created, updated, title, start_date, due_date, group_id, problem_id) FROM stdin;
+\.
+
+
+--
+-- Name: assignment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: andres
+--
+
+SELECT pg_catalog.setval('assignment_id_seq', 1, false);
+
+
+--
+-- Data for Name: case; Type: TABLE DATA; Schema: public; Owner: andres
+--
+
+COPY "case" (id, created, updated, input, feedback, output, is_sample, problem_id) FROM stdin;
+1	2018-03-07 15:05:11.182451	2018-03-07 15:05:11.182456	1 1	Nice	2	f	1
+2	2018-03-07 15:07:09.064903	2018-03-07 15:07:09.06491	1 1	Nice	2	f	2
+3	2018-03-07 15:07:41.284525	2018-03-07 15:07:41.284534	1 1	1 1	2	f	3
+4	2018-03-07 15:08:06.599151	2018-03-07 15:08:06.599158	1 1	1 1	2	f	4
+5	2018-03-07 15:08:33.938188	2018-03-07 15:08:33.938194	1 1	nice	2	f	5
+6	2018-03-07 15:08:57.240751	2018-03-07 15:08:57.240759	1 1	1 1	2	f	6
+7	2018-03-07 15:09:41.727477	2018-03-07 15:09:41.727483	1 1	nice	2	f	7
+8	2018-03-07 15:10:10.129909	2018-03-07 15:10:10.129923	1 1	nice	2	f	8
+9	2018-03-07 15:10:52.38324	2018-03-07 15:10:52.383246	1 1	nice	2	f	9
+13	2018-03-07 16:20:56.296855	2018-03-07 16:20:56.296865	1 1	1 1	2	f	22
+14	2018-03-07 16:21:39.68666	2018-03-07 16:21:39.686666	1 1	nice	2	f	23
+15	2018-03-07 16:22:20.217373	2018-03-07 16:22:20.217379	1 1	nice 	2	f	24
+16	2018-03-07 16:22:55.502258	2018-03-07 16:22:55.502269	1 1	nice 	2	f	25
+17	2018-03-07 16:23:19.312098	2018-03-07 16:23:19.312103	1 1	nice	2	f	26
+18	2018-03-07 16:23:42.229925	2018-03-07 16:23:42.229931	1 1	nice	2	f	27
+19	2018-03-07 16:25:11.113108	2018-03-07 16:25:11.113115	1 1	nice	2	f	28
+20	2018-03-07 16:25:37.197222	2018-03-07 16:25:37.197233	1 1	nice	2	f	29
+21	2018-03-07 16:25:58.93555	2018-03-07 16:25:58.935556	1 1	nice	2	f	30
+22	2018-03-07 16:26:38.570267	2018-03-07 16:26:38.570273	1 1	nice	2	f	31
+23	2018-03-07 16:26:59.611551	2018-03-07 16:26:59.611561	1 1	nice	2	f	32
+24	2018-03-07 16:27:22.197372	2018-03-07 16:27:22.197378	1 1	nice	2	f	33
+25	2018-03-07 16:29:06.716091	2018-03-07 16:29:06.716099	1 1	nice	2	f	34
+26	2018-03-07 16:29:30.797009	2018-03-07 16:29:30.797019	1 1	nice	2	f	35
+27	2018-03-07 16:30:00.843601	2018-03-07 16:30:00.843609	1 1	nice	2	f	36
+28	2018-03-07 16:31:11.005168	2018-03-07 16:31:11.005175	1 1	nice	2	f	37
+29	2018-03-07 16:31:30.374204	2018-03-07 16:31:30.37421	1 1	nice	2	f	38
+30	2018-03-07 16:32:58.07624	2018-03-07 16:32:58.076251	1 1	nice	2	f	39
+31	2018-03-07 16:34:46.326652	2018-03-07 16:34:46.326659	1 1	nice	2	f	40
+32	2018-03-07 16:35:17.347863	2018-03-07 16:35:17.347869	1 1	nice	2	f	41
+33	2018-03-07 16:35:37.379207	2018-03-07 16:35:37.379215	1 1	nice	2	f	42
+34	2018-03-07 16:36:10.237097	2018-03-07 16:36:10.237105	1 1	nice	2	f	43
+35	2018-03-07 16:36:44.634391	2018-03-07 16:36:44.634399	1 1	nice	2	f	44
+36	2018-03-07 16:37:10.865094	2018-03-07 16:37:10.865099	1 1	nice	2	f	45
+37	2018-03-07 16:37:39.230363	2018-03-07 16:37:39.230371	1 1	nice	2	f	46
+38	2018-03-07 16:37:58.312584	2018-03-07 16:37:58.312594	1 1	nice	2	f	47
+39	2018-03-07 16:38:20.144362	2018-03-07 16:38:20.144368	1 1	nice	2	f	48
+40	2018-03-07 16:39:07.009121	2018-03-07 16:39:07.009127	1 1	nice	2	f	49
+41	2018-03-07 16:40:19.807376	2018-03-07 16:40:19.807383	1 1	nice	2	f	50
+42	2018-03-07 16:40:41.295204	2018-03-07 16:40:41.29521	1 1	nice	2	f	51
+43	2018-03-07 16:42:40.803228	2018-03-07 16:42:40.803237	1 1	nice	2	f	52
+44	2018-03-07 16:43:05.091807	2018-03-07 16:43:05.091814	1 1	nice	2	f	53
+45	2018-03-07 16:43:22.934068	2018-03-07 16:43:22.934074	1 1	nice	2	f	54
+\.
+
+
+--
+-- Name: case_id_seq; Type: SEQUENCE SET; Schema: public; Owner: andres
+--
+
+SELECT pg_catalog.setval('case_id_seq', 45, true);
+
+
+--
+-- Data for Name: comment; Type: TABLE DATA; Schema: public; Owner: andres
+--
+
+COPY comment (id, created, updated, text, "isVisible", likes, dislikes, forum_id) FROM stdin;
+\.
+
+
+--
+-- Name: comment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: andres
+--
+
+SELECT pg_catalog.setval('comment_id_seq', 1, false);
+
+
+--
+-- Data for Name: course; Type: TABLE DATA; Schema: public; Owner: andres
+--
+
+COPY course (id, created, updated, name) FROM stdin;
+5	2018-03-07 13:53:41.804658	2018-03-07 13:53:41.804668	Data Structures
+6	2018-03-07 13:53:45.968692	2018-03-07 13:53:45.968701	Algorithms
+7	2018-03-07 13:53:57.152114	2018-03-07 13:53:57.152123	Object Oriented Programing
+8	2018-03-07 13:54:14.87462	2018-03-07 13:54:14.874628	Program Fundamentals
+\.
+
+
+--
+-- Name: course_id_seq; Type: SEQUENCE SET; Schema: public; Owner: andres
+--
+
+SELECT pg_catalog.setval('course_id_seq', 8, true);
+
+
+--
+-- Data for Name: enrollment; Type: TABLE DATA; Schema: public; Owner: andres
+--
+
+COPY enrollment (id, created, updated, group_id, student_id) FROM stdin;
+1	2018-03-07 15:48:10.302833	2018-03-07 15:48:10.302841	1	2
+2	2018-03-07 15:48:10.306483	2018-03-07 15:48:10.30649	1	3
+3	2018-03-07 15:48:36.461976	2018-03-07 15:48:36.461983	2	4
+4	2018-03-07 15:48:36.464823	2018-03-07 15:48:36.464829	2	6
+5	2018-03-07 15:48:58.589704	2018-03-07 15:48:58.589711	3	5
+\.
+
+
+--
+-- Name: enrollment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: andres
+--
+
+SELECT pg_catalog.setval('enrollment_id_seq', 5, true);
+
+
+--
+-- Data for Name: forum; Type: TABLE DATA; Schema: public; Owner: andres
+--
+
+COPY forum (id, created, updated, name) FROM stdin;
+\.
+
+
+--
+-- Name: forum_id_seq; Type: SEQUENCE SET; Schema: public; Owner: andres
+--
+
+SELECT pg_catalog.setval('forum_id_seq', 1, false);
+
+
+--
+-- Data for Name: group; Type: TABLE DATA; Schema: public; Owner: andres
+--
+
+COPY "group" (id, created, updated, course_id, period, professor_id) FROM stdin;
+1	2018-03-07 15:48:10.300286	2018-03-07 15:48:10.300296	5	Winter	7
+2	2018-03-07 15:48:36.4608	2018-03-07 15:48:36.460808	7	Summer	7
+3	2018-03-07 15:48:58.588353	2018-03-07 15:48:58.588362	8	Fall	8
+\.
+
+
+--
+-- Name: group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: andres
+--
+
+SELECT pg_catalog.setval('group_id_seq', 3, true);
+
+
+--
+-- Data for Name: language; Type: TABLE DATA; Schema: public; Owner: andres
+--
+
+COPY language (id, created, updated, name, value, extension) FROM stdin;
+1	2018-03-07 15:01:57.35332	2018-03-07 15:01:57.353328	c++	cpp	cpp
+\.
+
+
+--
+-- Name: language_id_seq; Type: SEQUENCE SET; Schema: public; Owner: andres
+--
+
+SELECT pg_catalog.setval('language_id_seq', 1, true);
+
+
+--
+-- Data for Name: problem; Type: TABLE DATA; Schema: public; Owner: andres
+--
+
+COPY problem (created, updated, name, difficulty, active, language, code, template, signature, description_english, description_spanish, time_limit, memory_limit, author_id, id, is_subproblem, belongs_to) FROM stdin;
+2018-03-07 15:05:11.171918	2018-03-07 15:05:11.171929	KMP	1	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	1	f	\N
+2018-03-07 15:07:09.059764	2018-03-07 15:07:09.059771	KMP.1	1	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	2	t	1
+2018-03-07 15:07:41.267639	2018-03-07 15:07:41.267646	KMP.2	1	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	3	t	1
+2018-03-07 15:08:06.591661	2018-03-07 15:08:06.591669	Z-Function	2	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	4	f	\N
+2018-03-07 15:08:33.934163	2018-03-07 15:08:33.934169	Z-Function.1	2	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	5	t	4
+2018-03-07 15:08:57.235583	2018-03-07 15:08:57.23559	Z-Function.2	2	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	6	t	4
+2018-03-07 15:09:41.720159	2018-03-07 15:09:41.720167	Max Stock	1	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	7	f	\N
+2018-03-07 15:10:10.111779	2018-03-07 15:10:10.111786	Max Stock.1	1	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	8	t	7
+2018-03-07 15:10:52.378972	2018-03-07 15:10:52.378978	Max Stock.2	1	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	9	t	7
+2018-03-07 16:20:56.284824	2018-03-07 16:20:56.284834	Find Min	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	22	f	\N
+2018-03-07 16:29:06.709026	2018-03-07 16:29:06.709033	Stack	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	34	f	\N
+2018-03-07 16:21:39.682369	2018-03-07 16:21:39.682379	Find Min.1	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	23	t	22
+2018-03-07 16:34:46.320096	2018-03-07 16:34:46.320104	Closest Pair of Points	1	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	40	f	\N
+2018-03-07 16:22:20.212486	2018-03-07 16:22:20.212493	Find Min.2	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	24	t	22
+2018-03-07 16:22:55.494436	2018-03-07 16:22:55.494445	Floyd	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	25	f	\N
+2018-03-07 16:29:30.791889	2018-03-07 16:29:30.791896	Stack.1	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	35	t	34
+2018-03-07 16:23:19.307711	2018-03-07 16:23:19.307719	Floyd.1	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	26	t	25
+2018-03-07 16:36:10.229679	2018-03-07 16:36:10.229687	Linked List	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	43	f	\N
+2018-03-07 16:23:42.225221	2018-03-07 16:23:42.225228	Floyd.2	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	27	t	25
+2018-03-07 16:25:11.106137	2018-03-07 16:25:11.10615	Binary Search	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	28	f	\N
+2018-03-07 16:30:00.839157	2018-03-07 16:30:00.839167	Stack.2	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	36	t	34
+2018-03-07 16:25:37.181203	2018-03-07 16:25:37.18121	Binary Search.1	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	29	t	28
+2018-03-07 16:31:10.99813	2018-03-07 16:31:10.998139	Queue	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	37	f	\N
+2018-03-07 16:25:58.93134	2018-03-07 16:25:58.931348	Binary Search.2	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	30	t	28
+2018-03-07 16:26:38.563256	2018-03-07 16:26:38.563268	Max Flow	2	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	31	f	\N
+2018-03-07 16:35:17.343638	2018-03-07 16:35:17.343646	Closest Pair of Points.1	1	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	41	t	40
+2018-03-07 16:26:59.607191	2018-03-07 16:26:59.607199	Max Flow.1	2	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	32	t	31
+2018-03-07 16:31:30.369904	2018-03-07 16:31:30.369911	Queue.1	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	38	t	37
+2018-03-07 16:27:22.193109	2018-03-07 16:27:22.193116	Max Flow.2	2	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	33	t	31
+2018-03-07 16:35:37.362705	2018-03-07 16:35:37.362716	Closest Pair of Points.2	1	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	42	t	40
+2018-03-07 16:32:58.07162	2018-03-07 16:32:58.071628	Queue.2	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	39	t	37
+2018-03-07 16:36:44.630019	2018-03-07 16:36:44.630026	Linked List.1	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	44	t	43
+2018-03-07 16:37:39.224214	2018-03-07 16:37:39.224221	Tree	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	46	f	\N
+2018-03-07 16:37:58.295898	2018-03-07 16:37:58.295906	Tree.1	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	47	t	46
+2018-03-07 16:39:07.003114	2018-03-07 16:39:07.003121	Find Max	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	49	f	\N
+2018-03-07 16:40:19.802995	2018-03-07 16:40:19.803003	Find Max.1	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	50	t	49
+2018-03-07 16:42:40.795204	2018-03-07 16:42:40.795212	Target Sum	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	52	f	\N
+2018-03-07 16:43:05.076163	2018-03-07 16:43:05.076171	Target Sum.1	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	53	t	52
+2018-03-07 16:37:10.86095	2018-03-07 16:37:10.860957	Linked List.2	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	45	t	43
+2018-03-07 16:38:20.140198	2018-03-07 16:38:20.140206	Tree.2	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	48	t	46
+2018-03-07 16:40:41.291424	2018-03-07 16:40:41.291431	Find Max.2	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	51	t	49
+2018-03-07 16:43:22.929971	2018-03-07 16:43:22.929979	Target Sum.2	0	t	cpp	int sum(int a, int b) { return a + b;};	#include <iostream>\nusing namespace std;\n\n//&function\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << sum(a, b);\n    return 0;\n}	int sum(int a, int b){};	Description in English	Descripción en Español	1	1	1	54	t	52
+\.
+
+
+--
+-- Name: problem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: andres
+--
+
+SELECT pg_catalog.setval('problem_id_seq', 54, true);
+
+
+--
+-- Data for Name: problemtopic; Type: TABLE DATA; Schema: public; Owner: andres
+--
+
+COPY problemtopic (id, created, updated, name, problem_id, topic_id) FROM stdin;
+1	2018-03-07 15:05:11.180064	2018-03-07 15:05:11.180071	\N	1	2
+2	2018-03-07 15:08:06.597598	2018-03-07 15:08:06.597605	\N	4	2
+3	2018-03-07 15:09:41.726082	2018-03-07 15:09:41.726088	\N	7	1
+7	2018-03-07 16:20:56.292892	2018-03-07 16:20:56.292903	\N	22	3
+8	2018-03-07 16:22:55.500189	2018-03-07 16:22:55.500196	\N	25	4
+9	2018-03-07 16:25:11.111559	2018-03-07 16:25:11.111566	\N	28	6
+10	2018-03-07 16:26:38.568788	2018-03-07 16:26:38.568794	\N	31	4
+11	2018-03-07 16:29:06.714348	2018-03-07 16:29:06.714356	\N	34	5
+12	2018-03-07 16:31:11.00369	2018-03-07 16:31:11.003697	\N	37	5
+13	2018-03-07 16:34:46.324674	2018-03-07 16:34:46.324683	\N	40	6
+14	2018-03-07 16:36:10.235247	2018-03-07 16:36:10.235256	\N	43	5
+15	2018-03-07 16:37:39.228359	2018-03-07 16:37:39.228367	\N	46	5
+16	2018-03-07 16:39:07.007682	2018-03-07 16:39:07.00769	\N	49	3
+17	2018-03-07 16:42:40.801231	2018-03-07 16:42:40.801242	\N	52	3
+\.
+
+
+--
+-- Name: problemtopic_id_seq; Type: SEQUENCE SET; Schema: public; Owner: andres
+--
+
+SELECT pg_catalog.setval('problemtopic_id_seq', 17, true);
+
+
+--
+-- Data for Name: relevanttopic; Type: TABLE DATA; Schema: public; Owner: andres
+--
+
+COPY relevanttopic (id, created, updated, name, course_id, topic_id) FROM stdin;
+\.
+
+
+--
+-- Name: relevanttopic_id_seq; Type: SEQUENCE SET; Schema: public; Owner: andres
+--
+
+SELECT pg_catalog.setval('relevanttopic_id_seq', 1, false);
+
+
+--
+-- Data for Name: statistic; Type: TABLE DATA; Schema: public; Owner: andres
+--
+
+COPY statistic (id, created, updated, total_submissions, total_accepted_submissions, problem_id) FROM stdin;
+1	2018-03-07 15:05:11.177813	2018-03-07 15:05:11.17782	0	0	1
+4	2018-03-07 15:08:06.595502	2018-03-07 15:08:06.595509	0	0	4
+5	2018-03-07 15:08:33.936944	2018-03-07 15:08:33.93695	0	0	5
+6	2018-03-07 15:08:57.239181	2018-03-07 15:08:57.239205	0	0	6
+7	2018-03-07 15:09:41.724513	2018-03-07 15:09:41.724521	0	0	7
+8	2018-03-07 15:10:10.12097	2018-03-07 15:10:10.120979	0	0	8
+9	2018-03-07 15:10:52.381949	2018-03-07 15:10:52.381956	0	0	9
+13	2018-03-07 16:20:56.29045	2018-03-07 16:20:56.290458	0	0	22
+14	2018-03-07 16:21:39.685401	2018-03-07 16:21:39.685408	0	0	23
+15	2018-03-07 16:22:20.215631	2018-03-07 16:22:20.215639	0	0	24
+16	2018-03-07 16:22:55.498805	2018-03-07 16:22:55.498816	0	0	25
+19	2018-03-07 16:25:11.11023	2018-03-07 16:25:11.110237	0	0	28
+22	2018-03-07 16:26:38.567511	2018-03-07 16:26:38.567518	0	0	31
+23	2018-03-07 16:26:59.609912	2018-03-07 16:26:59.609918	0	0	32
+24	2018-03-07 16:27:22.196064	2018-03-07 16:27:22.196071	0	0	33
+25	2018-03-07 16:29:06.712955	2018-03-07 16:29:06.712962	0	0	34
+26	2018-03-07 16:29:30.795193	2018-03-07 16:29:30.795201	0	0	35
+27	2018-03-07 16:30:00.842218	2018-03-07 16:30:00.842227	0	0	36
+28	2018-03-07 16:31:11.002251	2018-03-07 16:31:11.002259	0	0	37
+29	2018-03-07 16:31:30.372788	2018-03-07 16:31:30.372809	0	0	38
+30	2018-03-07 16:32:58.074636	2018-03-07 16:32:58.074643	0	0	39
+31	2018-03-07 16:34:46.32302	2018-03-07 16:34:46.323027	0	0	40
+32	2018-03-07 16:35:17.346534	2018-03-07 16:35:17.346541	0	0	41
+33	2018-03-07 16:35:37.371832	2018-03-07 16:35:37.371839	0	0	42
+34	2018-03-07 16:36:10.233147	2018-03-07 16:36:10.233155	0	0	43
+37	2018-03-07 16:37:39.227019	2018-03-07 16:37:39.227025	0	0	46
+40	2018-03-07 16:39:07.006413	2018-03-07 16:39:07.00642	0	0	49
+42	2018-03-07 16:40:41.294032	2018-03-07 16:40:41.294038	0	0	51
+43	2018-03-07 16:42:40.798882	2018-03-07 16:42:40.798893	0	0	52
+20	2018-03-07 16:25:37.190143	2018-03-07 16:25:37.19015	1	1	29
+21	2018-03-07 16:25:58.934232	2018-03-07 16:25:58.934239	1	0	30
+41	2018-03-07 16:40:19.805976	2018-03-07 16:40:19.805984	1	1	50
+2	2018-03-07 15:07:09.063349	2018-03-07 15:07:09.063357	1	1	2
+3	2018-03-07 15:07:41.282339	2018-03-07 15:07:41.282348	1	0	3
+17	2018-03-07 16:23:19.310754	2018-03-07 16:23:19.310762	1	0	26
+18	2018-03-07 16:23:42.228479	2018-03-07 16:23:42.228486	1	0	27
+44	2018-03-07 16:43:05.084935	2018-03-07 16:43:05.084943	1	0	53
+45	2018-03-07 16:43:22.932792	2018-03-07 16:43:22.932799	1	1	54
+35	2018-03-07 16:36:44.632767	2018-03-07 16:36:44.632773	1	1	44
+36	2018-03-07 16:37:10.863924	2018-03-07 16:37:10.863931	1	1	45
+38	2018-03-07 16:37:58.305095	2018-03-07 16:37:58.305104	1	1	47
+39	2018-03-07 16:38:20.143062	2018-03-07 16:38:20.143069	1	0	48
+\.
+
+
+--
+-- Name: statistic_id_seq; Type: SEQUENCE SET; Schema: public; Owner: andres
+--
+
+SELECT pg_catalog.setval('statistic_id_seq', 45, true);
+
+
+--
+-- Data for Name: submission; Type: TABLE DATA; Schema: public; Owner: andres
+--
+
+COPY submission (id, created, updated, code, language, feedback_list, grade, no_of_attempt, state, result, user_id, problem_id) FROM stdin;
+1	2018-03-07 16:44:10.24969	2018-03-07 16:44:10.249698	int sum(int a, int b){return a+b;};	cpp	[]	100	1	evaluated	\N	2	29
+2	2018-03-07 16:44:24.783053	2018-03-07 16:44:24.783062	int sum(int a, int b){return a;};	cpp	[{"status": "wrong answer", "feedback": "nice"}]	0	1	evaluated	\N	2	30
+3	2018-03-07 16:45:03.26551	2018-03-07 16:45:03.265519	int sum(int a, int b){return a+b;};	cpp	[]	100	1	evaluated	\N	2	50
+4	2018-03-07 16:45:37.6679	2018-03-07 16:45:37.667908	int sum(int a, int b){return a+b;};	cpp	[]	100	1	evaluated	\N	3	2
+5	2018-03-07 16:45:54.835432	2018-03-07 16:45:54.83544	int sum(int a, int b){return a;};	cpp	[{"status": "wrong answer", "feedback": "1 1"}]	0	1	evaluated	\N	3	3
+6	2018-03-07 16:48:04.413021	2018-03-07 16:48:04.413031	int sum(int a, int b){return a;};	cpp	[{"status": "wrong answer", "feedback": "nice"}]	0	1	evaluated	\N	4	26
+7	2018-03-07 16:48:16.164689	2018-03-07 16:48:16.164698	int sum(int a, int b){return b;};	cpp	[{"status": "wrong answer", "feedback": "nice"}]	0	1	evaluated	\N	4	27
+8	2018-03-07 16:48:43.15685	2018-03-07 16:48:43.156858	int sum(int a, int b){return a;};	cpp	[{"status": "wrong answer", "feedback": "nice"}]	0	1	evaluated	\N	6	53
+9	2018-03-07 16:48:49.519277	2018-03-07 16:48:49.519338	int sum(int a, int b){return a+b;};	cpp	[]	100	1	evaluated	\N	6	54
+10	2018-03-07 16:49:42.206242	2018-03-07 16:49:42.206251	int sum(int a, int b){return a+b;};	cpp	[]	100	1	evaluated	\N	5	44
+11	2018-03-07 16:49:52.570259	2018-03-07 16:49:52.570267	int sum(int a, int b){return a+b;};	cpp	[]	100	1	evaluated	\N	5	45
+12	2018-03-07 16:50:06.393636	2018-03-07 16:50:06.393645	int sum(int a, int b){return a+b;};	cpp	[]	100	1	evaluated	\N	5	47
+13	2018-03-07 16:50:10.471987	2018-03-07 16:50:10.471997	int sum(int a, int b){return a;};	cpp	[{"status": "wrong answer", "feedback": "nice"}]	0	1	evaluated	\N	5	48
+\.
+
+
+--
+-- Name: submission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: andres
+--
+
+SELECT pg_catalog.setval('submission_id_seq', 13, true);
+
+
+--
+-- Data for Name: taken; Type: TABLE DATA; Schema: public; Owner: andres
+--
+
+COPY taken (id, created, updated, user_id, problem_id, team_id) FROM stdin;
+\.
+
+
+--
+-- Name: taken_id_seq; Type: SEQUENCE SET; Schema: public; Owner: andres
+--
+
+SELECT pg_catalog.setval('taken_id_seq', 1, false);
+
+
+--
+-- Data for Name: team; Type: TABLE DATA; Schema: public; Owner: andres
+--
+
+COPY team (id, created, updated, name, professor_id, group_id) FROM stdin;
+\.
+
+
+--
+-- Name: team_id_seq; Type: SEQUENCE SET; Schema: public; Owner: andres
+--
+
+SELECT pg_catalog.setval('team_id_seq', 1, false);
+
+
+--
+-- Data for Name: teamenroll; Type: TABLE DATA; Schema: public; Owner: andres
+--
+
+COPY teamenroll (id, created, updated, team_id, student_id) FROM stdin;
+\.
+
+
+--
+-- Name: teamenroll_id_seq; Type: SEQUENCE SET; Schema: public; Owner: andres
+--
+
+SELECT pg_catalog.setval('teamenroll_id_seq', 1, false);
+
+
+--
+-- Data for Name: topic; Type: TABLE DATA; Schema: public; Owner: andres
+--
+
+COPY topic (id, created, updated, name) FROM stdin;
+1	2018-03-07 13:50:30.387237	2018-03-07 13:50:30.387244	Dynamic Programing
+2	2018-03-07 13:50:37.149981	2018-03-07 13:50:37.149989	String Manipulation
+3	2018-03-07 13:50:47.399711	2018-03-07 13:50:47.399719	One Dimensional Array
+4	2018-03-07 13:50:52.041538	2018-03-07 13:50:52.041549	Graph
+5	2018-03-07 13:50:56.699641	2018-03-07 13:50:56.699648	Implementation
+6	2018-03-07 13:52:00.723828	2018-03-07 13:52:00.723835	Divide And Conquer
+\.
+
+
+--
+-- Name: topic_id_seq; Type: SEQUENCE SET; Schema: public; Owner: andres
+--
+
+SELECT pg_catalog.setval('topic_id_seq', 6, true);
+
+
+--
+-- Data for Name: user; Type: TABLE DATA; Schema: public; Owner: andres
+--
+
+COPY "user" (id, created, updated, email, enrollment, password_hash, active, first_name, last_name, role) FROM stdin;
+1	2018-03-07 13:45:26.052022	2018-03-07 13:45:26.052041	admin@admin.com	l00admin	$6$rounds=714488$BVfhH7woA0hQLpq/$vbR.Hj/BOfQD5reJdZUDnu6stAEWDNRMIcrfZ8YqLVtRYLslC6n5pHSTTF6IGJkpUF8sE//G8NLcoUjK0IyQK.	\N	Admin	admin	admin
+2	2018-03-07 13:46:54.45093	2018-03-07 13:46:54.45094	a01280648	a01280648	$6$rounds=612800$jz.nCffTAltXoL3b$uwd5NRjO5zcrHSvOg5dCRouhXFepl2NNTpUm7FFKlovHlIIMoAW7lGjBffQNTcwFBFxDMkYGi6t5e4ZTA2euf0	\N	Daniel	Gonzalez	student
+3	2018-03-07 13:47:18.582564	2018-03-07 13:47:18.582575	a01280704	a01280704	$6$rounds=646572$7DFaNh3dDknYC7fO$9E96AgkN4F2K933MGGAG7kh8USZ2vfPvcbECNp5vcsdw0o.wDm98Af5MGXuJltzw4zOFhGT7LaW4HyRiby/kc/	\N	Jose	Carvajal	student
+4	2018-03-07 13:47:47.081468	2018-03-07 13:47:47.081479	a01176975	a01176975	$6$rounds=717214$1/VLAEzHYSumqgNM$LgPT2k8q4aSUEjNt2Y/WCaU4hjdKUfip1iC5DpAqA5VCH1JrDpH.tBByMR3w8FSU3rwMJhQGML4lg7J88jQs70	\N	Andres	Sosa	student
+5	2018-03-07 13:48:02.75358	2018-03-07 13:48:02.75359	a01196160	a01196160	$6$rounds=644186$OZkhQDcJ.oIWJpYj$4EYHZSMbRHoZvlV/lI2BocJKQrXv0vqV7e8FjgBBpQINAJDAV4LbFUMg4l8mbuKodGIXV4Ubc0wfUYvT0JFil.	\N	Jorge	Vazques	student
+6	2018-03-07 13:48:16.144306	2018-03-07 13:48:16.144316	a01280927	a01280927	$6$rounds=678375$i1ZVbb3ri98AkJ0O$c19aoQEmtxEJyKQ4MqfrHHMx/37QiclF0AiUeLaVmC8yVsCCQzyS4AkxfoXtu4Nq0XoWC.accCzEdn4fydu5k1	\N	Jorge	Gonzalez	student
+7	2018-03-07 13:49:20.378129	2018-03-07 13:49:20.378139	l01234567	l01234567	$6$rounds=697350$dMdiNqEHoYfY/Ekc$cTZUGaDvrKoxsMM2L7.P/N9wLbeX8KcOIuo/uM.14i1jhffhbESpiIlPAGkYszkFmwteDNYb6ApFJ//dx4Lkd0	\N	Luis	Gonzalez	professor
+8	2018-03-07 13:49:58.393012	2018-03-07 13:49:58.393022	l9876543	l9876543	$6$rounds=593619$CZ8ohrJDTH/qnC3S$wddV1O0lKxf8u/bS2tVpa7uxct2.KRk/8EtSYeGAJVhocUFyz2EhVnZopfmEQzFeNo7gFqOj5IIAHncXo/Cvo0	\N	Alfredo	Salazar	professor
+\.
+
+
+--
+-- Name: user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: andres
+--
+
+SELECT pg_catalog.setval('user_id_seq', 8, true);
+
+
+--
+-- Name: assignment assignment_pkey; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY assignment
+    ADD CONSTRAINT assignment_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: case case_pkey; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY "case"
+    ADD CONSTRAINT case_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: comment comment_pkey; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY comment
+    ADD CONSTRAINT comment_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: course course_pkey; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY course
+    ADD CONSTRAINT course_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: enrollment enrollment_pkey; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY enrollment
+    ADD CONSTRAINT enrollment_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: forum forum_pkey; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY forum
+    ADD CONSTRAINT forum_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: group group_pkey; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY "group"
+    ADD CONSTRAINT group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: language language_pkey; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY language
+    ADD CONSTRAINT language_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: language language_value_key; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY language
+    ADD CONSTRAINT language_value_key UNIQUE (value);
+
+
+--
+-- Name: problem problem_name_key; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY problem
+    ADD CONSTRAINT problem_name_key UNIQUE (name);
+
+
+--
+-- Name: problem problem_pkey; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY problem
+    ADD CONSTRAINT problem_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: problemtopic problemtopic_pkey; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY problemtopic
+    ADD CONSTRAINT problemtopic_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: relevanttopic relevanttopic_pkey; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY relevanttopic
+    ADD CONSTRAINT relevanttopic_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: statistic statistic_pkey; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY statistic
+    ADD CONSTRAINT statistic_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: submission submission_pkey; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY submission
+    ADD CONSTRAINT submission_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: taken taken_pkey; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY taken
+    ADD CONSTRAINT taken_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: team team_pkey; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY team
+    ADD CONSTRAINT team_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: teamenroll teamenroll_pkey; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY teamenroll
+    ADD CONSTRAINT teamenroll_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: topic topic_pkey; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY topic
+    ADD CONSTRAINT topic_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user user_email_key; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY "user"
+    ADD CONSTRAINT user_email_key UNIQUE (email);
+
+
+--
+-- Name: user user_enrollment_key; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY "user"
+    ADD CONSTRAINT user_enrollment_key UNIQUE (enrollment);
+
+
+--
+-- Name: user user_pkey; Type: CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY "user"
+    ADD CONSTRAINT user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: assignment assignment_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY assignment
+    ADD CONSTRAINT assignment_group_id_fkey FOREIGN KEY (group_id) REFERENCES "group"(id);
+
+
+--
+-- Name: assignment assignment_problem_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY assignment
+    ADD CONSTRAINT assignment_problem_id_fkey FOREIGN KEY (problem_id) REFERENCES problem(id);
+
+
+--
+-- Name: case case_problem_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY "case"
+    ADD CONSTRAINT case_problem_id_fkey FOREIGN KEY (problem_id) REFERENCES problem(id);
+
+
+--
+-- Name: comment comment_forum_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY comment
+    ADD CONSTRAINT comment_forum_id_fkey FOREIGN KEY (forum_id) REFERENCES forum(id);
+
+
+--
+-- Name: enrollment enrollment_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY enrollment
+    ADD CONSTRAINT enrollment_group_id_fkey FOREIGN KEY (group_id) REFERENCES "group"(id);
+
+
+--
+-- Name: enrollment enrollment_student_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY enrollment
+    ADD CONSTRAINT enrollment_student_id_fkey FOREIGN KEY (student_id) REFERENCES "user"(id);
+
+
+--
+-- Name: group group_course_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY "group"
+    ADD CONSTRAINT group_course_id_fkey FOREIGN KEY (course_id) REFERENCES course(id);
+
+
+--
+-- Name: group group_professor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY "group"
+    ADD CONSTRAINT group_professor_id_fkey FOREIGN KEY (professor_id) REFERENCES "user"(id);
+
+
+--
+-- Name: problem problem_author_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY problem
+    ADD CONSTRAINT problem_author_id_fkey FOREIGN KEY (author_id) REFERENCES "user"(id);
+
+
+--
+-- Name: problem problem_belongs_to_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY problem
+    ADD CONSTRAINT problem_belongs_to_fkey FOREIGN KEY (belongs_to) REFERENCES problem(id);
+
+
+--
+-- Name: problemtopic problemtopic_problem_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY problemtopic
+    ADD CONSTRAINT problemtopic_problem_id_fkey FOREIGN KEY (problem_id) REFERENCES problem(id);
+
+
+--
+-- Name: problemtopic problemtopic_topic_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY problemtopic
+    ADD CONSTRAINT problemtopic_topic_id_fkey FOREIGN KEY (topic_id) REFERENCES topic(id);
+
+
+--
+-- Name: relevanttopic relevanttopic_course_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY relevanttopic
+    ADD CONSTRAINT relevanttopic_course_id_fkey FOREIGN KEY (course_id) REFERENCES course(id);
+
+
+--
+-- Name: relevanttopic relevanttopic_topic_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY relevanttopic
+    ADD CONSTRAINT relevanttopic_topic_id_fkey FOREIGN KEY (topic_id) REFERENCES topic(id);
+
+
+--
+-- Name: statistic statistic_problem_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY statistic
+    ADD CONSTRAINT statistic_problem_id_fkey FOREIGN KEY (problem_id) REFERENCES problem(id);
+
+
+--
+-- Name: submission submission_problem_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY submission
+    ADD CONSTRAINT submission_problem_id_fkey FOREIGN KEY (problem_id) REFERENCES problem(id);
+
+
+--
+-- Name: submission submission_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY submission
+    ADD CONSTRAINT submission_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
+
+
+--
+-- Name: taken taken_problem_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY taken
+    ADD CONSTRAINT taken_problem_id_fkey FOREIGN KEY (problem_id) REFERENCES problem(id);
+
+
+--
+-- Name: taken taken_team_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY taken
+    ADD CONSTRAINT taken_team_id_fkey FOREIGN KEY (team_id) REFERENCES team(id);
+
+
+--
+-- Name: taken taken_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY taken
+    ADD CONSTRAINT taken_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
+
+
+--
+-- Name: team team_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY team
+    ADD CONSTRAINT team_group_id_fkey FOREIGN KEY (group_id) REFERENCES "group"(id);
+
+
+--
+-- Name: team team_professor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY team
+    ADD CONSTRAINT team_professor_id_fkey FOREIGN KEY (professor_id) REFERENCES "user"(id);
+
+
+--
+-- Name: teamenroll teamenroll_student_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY teamenroll
+    ADD CONSTRAINT teamenroll_student_id_fkey FOREIGN KEY (student_id) REFERENCES "user"(id);
+
+
+--
+-- Name: teamenroll teamenroll_team_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: andres
+--
+
+ALTER TABLE ONLY teamenroll
+    ADD CONSTRAINT teamenroll_team_id_fkey FOREIGN KEY (team_id) REFERENCES team(id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+
