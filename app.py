@@ -35,7 +35,7 @@ from sockets import ContestNamespace as contest
 
 from flask_cors import CORS, cross_origin
 
-from flask_restplus import Api
+# from flask_restplus import Api
 
 
 def create_app():
@@ -52,7 +52,7 @@ app = Flask(__name__)
 db.init_app(app)
 CORS(app)
 blueprint = Blueprint('api', __name__, url_prefix='/api')
-api = Api(blueprint, version='1.0', title='asdsad')
+api.init_app(blueprint)
 api.add_namespace(users_namespace)
 api.add_namespace(evaluator_namespace)
 api.add_namespace(courses_namespace)
