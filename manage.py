@@ -3,6 +3,7 @@ from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 from create_admin import CreateAdmin
 from app import app, db
+from models import User
 import config
 
 

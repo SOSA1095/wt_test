@@ -1,3 +1,108 @@
 INFO:root:New session ––– 2018-11-19 16:17:14.487152 ––– New session
 INFO:root:New session ––– 2018-11-19 16:18:03.501923 ––– New session
 INFO:root:New session ––– 2018-11-19 16:19:32.156604 ––– New session
+INFO:root:New session ––– 2018-12-04 14:54:28.860684 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 14:54:42.769045 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 14:54:53.140920 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 14:55:05.003018 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 14:55:21.511894 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 14:55:29.937007 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 14:55:43.082590 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:werkzeug: * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+INFO:werkzeug: * Restarting with stat
+INFO:root:New session ––– 2018-12-04 14:55:44.360613 ––– New session
+INFO:engineio:Server initialized for gevent.
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger pin code: 307-167-365
+INFO:werkzeug:127.0.0.1 - - [04/Dec/2018 14:55:53] "GET /api/ HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [04/Dec/2018 14:55:53] "GET /api/swagger.json HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [04/Dec/2018 14:55:53] "GET /favicon.ico HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [04/Dec/2018 14:56:11] "GET /swaggerui/bower/swagger-ui/dist/images/throbber.gif HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [04/Dec/2018 14:56:23] "POST /api/users/login HTTP/1.1" 401 -
+INFO:root:New session ––– 2018-12-04 14:57:01.014883 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 14:57:06.548721 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 14:57:59.735456 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 14:59:09.508287 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 14:59:20.196556 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:01:43.828247 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:01:57.913639 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:06:14.848276 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:12:15.694549 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:12:25.406019 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:17:53.084956 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:21:45.993484 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:22:28.738242 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:25:29.470391 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:25:38.148789 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:26:54.755527 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:29:32.773889 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:30:10.622108 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:52:06.859671 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:52:14.309342 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:52:22.030654 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:53:15.270147 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:53:32.858778 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:54:33.412921 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:55:46.074962 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:55:51.662292 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 15:55:55.535251 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 16:04:48.644810 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 16:09:05.527325 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 16:09:54.531695 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 16:10:00.078844 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 16:10:05.511081 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 16:10:28.305168 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 16:11:48.229027 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 16:29:01.585267 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 16:30:38.334057 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 16:30:53.419142 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 16:31:30.925025 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 16:33:21.489194 ––– New session
+INFO:engineio:Server initialized for gevent.
+INFO:root:New session ––– 2018-12-04 16:33:35.991525 ––– New session
+INFO:engineio:Server initialized for gevent.
