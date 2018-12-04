@@ -35,16 +35,38 @@ from sockets import ContestNamespace as contest
 
 from flask_cors import CORS, cross_origin
 
+from flask_restplus import Api
+
 
 def create_app():
     app = Flask(__name__)
     db.init_app(app)
     return app
 
-app = create_app()
+# app = create_app()
 
 # app = Flask(__name__)
 # app.config.from_object(os.environ['APP_SETTINGS'])
+
+app = Flask(__name__)
+blueprint = Blueprint('api', __name__, url_prefix='/api')
+api = Api(blueprint, version='1.0', title='asdsad')
+api.add_namespace(users_namespace)
+api.add_namespace(evaluator_namespace)
+api.add_namespace(courses_namespace)
+api.add_namespace(groups_namespace)
+api.add_namespace(topics_namespace)
+api.add_namespace(languages_namespace)
+api.add_namespace(submissions_namespace)
+api.add_namespace(problems_namespace)
+api.add_namespace(assignments_namespace)
+api.add_namespace(team_namespace)
+api.add_namespace(statistics_namespace)
+api.add_namespace(forum_namespace)
+api.add_namespace(comment_namespace)
+api.add_namespace(messages_namespace)
+app.register_blueprint(blueprint)
+
 app.config.from_object(config.ProductionConfig)
 # db.init_app(app)
 # db.create_all(app)
@@ -90,4 +112,4 @@ def main():
 
 if __name__ == '__main__':
     app.run(debug=True)
-    main()
+    # main()
