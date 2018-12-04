@@ -68,12 +68,17 @@ api.add_namespace(forum_namespace)
 api.add_namespace(comment_namespace)
 api.add_namespace(messages_namespace)
 app.register_blueprint(blueprint)
+logging.basicConfig(filename='example.log', level=logging.DEBUG)
+logging.info("New session ––– " + str(datetime.datetime.now()) + " ––– New session")
 
 app.config.from_object(config.ProductionConfig)
 # db.init_app(app)
 # db.create_all(app)
 security = Security(app)
 socketio = SocketIO(app)
+
+socketio.on_namespace(chat.ChatNamespace('/chat'))
+socketio.on_namespace(contest.ContestNamespace('/contest'))
 
 # CORS(app)
 
@@ -114,4 +119,5 @@ def main():
 
 if __name__ == '__main__':
     app.run(debug=True)
+    socketio.run()
     # main()
