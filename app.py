@@ -49,6 +49,8 @@ def create_app():
 # app.config.from_object(os.environ['APP_SETTINGS'])
 
 app = Flask(__name__)
+db.init_app(app)
+CORS(app)
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 api = Api(blueprint, version='1.0', title='asdsad')
 api.add_namespace(users_namespace)
@@ -73,7 +75,7 @@ app.config.from_object(config.ProductionConfig)
 security = Security(app)
 socketio = SocketIO(app)
 
-CORS(app)
+# CORS(app)
 
 @app.route('/')
 def hello():
