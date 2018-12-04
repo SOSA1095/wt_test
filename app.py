@@ -78,7 +78,6 @@ def initialize_app(flask_app):
     api.add_namespace(messages_namespace)
     api.add_namespace(recomendation_namespace)
     flask_app.register_blueprint(blueprint)
-    app.run()
     socketio.on_namespace(chat.ChatNamespace('/chat'))
     socketio.on_namespace(contest.ContestNamespace('/contest'))
     
@@ -90,4 +89,5 @@ def main():
     socketio.run()
 
 if __name__ == '__main__':
+    app.run(debug=True)
     main()
