@@ -51,7 +51,7 @@ def create_app():
 
 app = Flask(__name__)
 db.init_app(app)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 api.init_app(blueprint)
 api.add_namespace(users_namespace)
