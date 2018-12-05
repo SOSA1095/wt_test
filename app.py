@@ -51,11 +51,13 @@ def create_app():
 # app.config.from_object(os.environ['APP_SETTINGS'])
 
 app = Flask(__name__)
-db.init_app(app)
+db.init_app(app)    
 # CORS(app, origins="*", supports_credentials=True)
-CORS(app, resources={r"/*": {"origins": "*"}}, send_wildcard=True)
+# CORS(app, resources={r"/*": {"origins": "*"}}, send_wildcard=True)
+# app.config['CORS_HEADERS'] = 'Content-Type'
+# app.wsgi_app = ProxyFix(app.wsgi_app)
+cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
-app.wsgi_app = ProxyFix(app.wsgi_app)
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 api.init_app(blueprint)
 api.add_namespace(users_namespace)

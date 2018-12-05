@@ -22,6 +22,7 @@ ns = api.namespace('users', description='Operations related to users')
 
 
 @ns.route('/')
+@cross_origin()
 @api.header('Authorization', 'Auth token', required=True)
 class UserCollection(Resource):
 
@@ -69,6 +70,7 @@ class UserCreation(Resource):
 
 
 @ns.route('/login')
+@cross_origin()
 class UserAuthentication(Resource):
     @api.response(200, 'Valid User')
     @api.expect(user_auth)
