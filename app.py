@@ -52,7 +52,8 @@ def create_app():
 
 app = Flask(__name__)
 db.init_app(app)
-CORS(app, origins="*", supports_credentials=True)
+# CORS(app, origins="*", supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": "*"}}, send_wildcard=True)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.wsgi_app = ProxyFix(app.wsgi_app)
 blueprint = Blueprint('api', __name__, url_prefix='/api')
