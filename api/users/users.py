@@ -22,7 +22,6 @@ ns = api.namespace('users', description='Operations related to users')
 
 
 @ns.route('/')
-@cross_origin()
 @api.header('Authorization', 'Auth token', required=True)
 class UserCollection(Resource):
 
