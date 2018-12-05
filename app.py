@@ -34,6 +34,7 @@ from sockets import ChatNamespace as chat
 from sockets import ContestNamespace as contest
 
 from flask_cors import CORS, cross_origin
+from werkzeug.contrib.fixers import ProxyFix
 
 # from flask_restplus import Api
 
@@ -52,6 +53,8 @@ def create_app():
 app = Flask(__name__)
 db.init_app(app)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
+app.config['CORS_HEADERS'] = 'Content-Type'
+app.wsgi_app = ProxyFix(app.wsgi_app)
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 api.init_app(blueprint)
 api.add_namespace(users_namespace)
