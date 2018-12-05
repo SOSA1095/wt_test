@@ -6,6 +6,7 @@ from flask import request, abort, jsonify, g
 from flask_restplus import Resource
 from flask_security import auth_token_required, utils
 from flask_httpauth import HTTPBasicAuth
+from flask_cors import CORS, cross_origin
 from api.users.serializers import (user as api_user, user_auth, user_token,
                                    user_creation, user_edit)
 from api.restplus import api
