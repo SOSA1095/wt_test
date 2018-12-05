@@ -70,7 +70,6 @@ class UserCreation(Resource):
 
 
 @ns.route('/login')
-@cross_origin()
 class UserAuthentication(Resource):
     @api.response(200, 'Valid User')
     @api.expect(user_auth)
