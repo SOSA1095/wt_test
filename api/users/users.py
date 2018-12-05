@@ -6,7 +6,6 @@ from flask import request, abort, jsonify, g
 from flask_restplus import Resource
 from flask_security import auth_token_required, utils
 from flask_httpauth import HTTPBasicAuth
-from flask_cors import CORS, cross_origin
 from api.users.serializers import (user as api_user, user_auth, user_token,
                                    user_creation, user_edit)
 from api.restplus import api
@@ -22,7 +21,6 @@ ns = api.namespace('users', description='Operations related to users')
 
 
 @ns.route('/')
-@cross_origin() 
 @api.header('Authorization', 'Auth token', required=True)
 class UserCollection(Resource):
 
@@ -37,7 +35,6 @@ class UserCollection(Resource):
 
 
 @ns.route('/create')
-@cross_origin() 
 @api.header('Authorization', 'Auth token', required=True)
 class UserCreation(Resource):
     @api.response(201, 'User succesfully created')
@@ -71,7 +68,6 @@ class UserCreation(Resource):
 
 
 @ns.route('/login')
-@cross_origin() 
 class UserAuthentication(Resource):
     @api.response(200, 'Valid User')
     @api.expect(user_auth)
@@ -102,7 +98,6 @@ class UserAuthentication(Resource):
 
 
 @ns.route('/role')
-@cross_origin() 
 @api.header('Authorization', 'Auth token', required=True)
 class UserAuthorization(Resource):
     @api.response(200, 'User authorized')
@@ -120,7 +115,6 @@ class UserAuthorization(Resource):
 
 
 @ns.route('/edit')
-@cross_origin() 
 @api.header('Authorization', 'Auth token', required=True)
 class UserAuthorization(Resource):
     @api.expect(user_edit)
@@ -167,7 +161,6 @@ class UserAuthorization(Resource):
 
 
 @ns.route('/<int:id>')
-@cross_origin() 
 @api.header('Authorization', 'Auth token', required=True)
 @api.response(404, 'User not found.')
 class UserItem(Resource):
@@ -206,7 +199,6 @@ class UserItem(Resource):
 
 
 @ns.route('/<int:id>/reset_password')
-@cross_origin() 
 @api.header('Authorization', 'Auth token', required=True)
 @api.response(404, 'User not found.')
 class UserResetPassword(Resource):
@@ -225,7 +217,6 @@ class UserResetPassword(Resource):
 
 
 @auth.verify_password
-@cross_origin() 
 def verify_password(email_or_token, password):
     # first try to authenticate by token
     user = User.verify_auth_token(email_or_token)
